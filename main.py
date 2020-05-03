@@ -2,6 +2,7 @@ import click
 import eyed3
 import os
 import re
+import sys
 
 # Изменим уровень логирования в eyed3, чтобы показывать только ошибки.
 eyed3.log.setLevel("ERROR")
@@ -40,20 +41,19 @@ def cli(src_dir, dst_dir):
         os.listdir(src_dir)
     except PermissionError:
         print(
-            f'Доступ на чтение папки {src_dir} запрещен, исходная директория установлена по умолчанию {current_path}'
-        )
-        # Устанавливаем значение по умолчанию для исходной папки - папка, в которой запущен скрипт
-        src_dir = current_path 
+            f'Доступ на чтение папки {src_dir} запрещен'
+        )        
+        sys.exit()
     except FileNotFoundError:
         print(
-            f'Директория {src_dir} не существует, исходная директория установлена по умолчанию {current_path}'
+            f'Директория {src_dir} не существует'
         )
-        src_dir = current_path # То же самое
+        sys.exit()
     except NotADirectoryError:
         print(
-            f'{src_dir} не является директорией, исходная директория установлена по умолчанию {current_path}'
+            f'{src_dir} не является директорией'
         )
-        src_dir = current_path # То же самое
+        sys.exit()
 
 
     """Содержимое исходной папки - список файлов c расширением mp3"""
@@ -99,7 +99,7 @@ def cli(src_dir, dst_dir):
                     # Исключение, если нет доступа на запись в целевую папку
                     except PermissionError: 
                         print(f'Доступ на запись в целевую папку запрещен')
-                        break
+                        sys.exit()
                 # Если в тегах нет информации об исполнителе или альбоме
                 else: 
                     print(f'В тегах файла {mp3_name} нет информации об исполнителе или альбоме, файл пропущен')
