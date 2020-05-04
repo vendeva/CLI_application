@@ -36,28 +36,26 @@ def delete_special(string):
 @click.option('-d', '--dst-dir', default=current_path, help='Destination directory.') 
 def cli(src_dir, dst_dir):
     try:
-        """ Проверка существования, права доступа на чтение значения аргумента исходной папки, 
-        я также является ли значение директорией"""
-        os.listdir(src_dir)
+        # Содержимое исходной папки - список файлов c расширением mp3
+        mp3_list = [elem for elem in os.listdir(src_dir) if elem.endswith(".mp3")]
+    # Исключение, если доступ на чтение исходной папки запрещен
     except PermissionError:
         print(
             f'Доступ на чтение папки {src_dir} запрещен'
         )        
         sys.exit()
+    # Исключение, если такой исходной папки не существует
     except FileNotFoundError:
         print(
             f'Директория {src_dir} не существует'
         )
         sys.exit()
+    # Исключение, если значение не является директорией
     except NotADirectoryError:
         print(
             f'{src_dir} не является директорией'
         )
         sys.exit()
-
-
-    """Содержимое исходной папки - список файлов c расширением mp3"""
-    mp3_list = [elem for elem in os.listdir(src_dir) if elem.endswith(".mp3")]
 
     if not mp3_list:
         print(f'В исходной директории нет файлов mp3')
